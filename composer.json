@@ -1,0 +1,36 @@
+{
+  "name": "luguohuakai/func",
+  "description": "func soft tools",
+  "keywords": [
+    "func",
+    "function",
+    "function tools",
+    "tools"
+  ],
+  "homepage": "https://github.com/luguohuakai/func",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "DM luguohuakai",
+      "email": "769245396@qq.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/luguohuakai/func/issues",
+    "source": "https://github.com/luguohuakai/func"
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=7.0",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-iconv": "*",
+    "ext-mbstring": "*",
+    "ext-redis": "*"
+  },
+  "config": {
+    "process-timeout": 1800
+  }
+}

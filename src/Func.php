@@ -1,12 +1,12 @@
 <?php
 
-namespace srun\src;
+namespace func\src;
 
 use DateTime;
 use Exception;
 use Redis;
 
-class Func implements \srun\base\Func
+class Func implements \func\base\Func
 {
     /**
      * 调试输出神器

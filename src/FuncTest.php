@@ -1,5 +1,5 @@
 <?php
-namespace srun\src;
+namespace func\src;
 
 require_once 'base/Func.php';
 require_once 'Func.php';

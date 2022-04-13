@@ -1,6 +1,6 @@
 <?php
 
-namespace srun\base;
+namespace func\base;
 
 use Redis;
 

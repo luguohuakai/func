@@ -249,6 +249,33 @@ class Func implements \func\base\Func
     }
 
     /**
+     * @param $url
+     * @param array $post_data
+     * @return mixed
+     */
+    public static function put($url, array $post_data = [])
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // https请求 不验证证书和hosts
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data)); // 模拟表单提交
+        // json方式提交
+        $header = array("Content-Type: application/json; charset=utf-8", "Content-Length:" . strlen(json_encode($post_data)));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        if (!empty($header)) curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $output = curl_exec($ch);
+        $_err = curl_error($ch);
+        if ($_err) return json_decode(json_encode(['_err' => $_err]));
+        curl_close($ch);
+        return $output;
+    }
+
+    /**
      * @param false $data 返回数据
      * @param string $msg
      * @param int $status
@@ -726,7 +753,7 @@ class Func implements \func\base\Func
         if ($position === 'middle') {
             if ($str_len <= 5 && $str_len > 1) {
                 $offset = 1;
-            } elseif($str_len > 5) {
+            } elseif ($str_len > 5) {
                 $offset = ceil($str_len / 4);
             }
         } else {

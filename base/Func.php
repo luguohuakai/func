@@ -6,7 +6,7 @@ use Redis;
 
 interface Func
 {
-    public static function dd(string $var = '', bool $stop = true, bool $as_array = false);
+    public static function dd($var, bool $stop = true, bool $as_array = false);
 
     public static function ww($var = '');
 

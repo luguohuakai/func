@@ -10,11 +10,11 @@ class Func implements \func\base\Func
 {
     /**
      * 调试输出神器
-     * @param string $var
+     * @param mixed $var
      * @param bool $stop 是否截断(die)
      * @param bool $as_array
      */
-    public static function dd(string $var = '', bool $stop = true, bool $as_array = false)
+    public static function dd($var, bool $stop = true, bool $as_array = false)
     {
         if (is_array($var) || is_object($var)) {
             echo '<pre>';
@@ -111,6 +111,7 @@ class Func implements \func\base\Func
     }
 
     /**
+     * 弹弹弹 弹走鱼尾纹
      * 网页快速弹出调试
      * @param $var
      */

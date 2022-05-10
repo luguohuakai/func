@@ -277,13 +277,13 @@ class Func implements \func\base\Func
     }
 
     /**
-     * @param false $data 返回数据
+     * @param false|mixed $data 返回数据
      * @param string $msg
      * @param int $status
      * @param int $code
      * @return false|string
      */
-    public static function formatReturnData2Json(bool $data = false, string $msg = '成功', int $status = 1, int $code = 200)
+    public static function formatReturnData2Json($data = false, string $msg = '成功', int $status = 1, int $code = 200)
     {
         $re['code'] = $code;
         $re['message'] = $msg;

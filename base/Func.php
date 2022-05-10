@@ -28,7 +28,7 @@ interface Func
 
     public static function put($url, array $post_data = []);
 
-    public static function formatReturnData2Json(bool $data = false, string $msg = '成功', int $status = 1, int $code = 200);
+    public static function formatReturnData2Json($data = false, string $msg = '成功', int $status = 1, int $code = 200);
 
     public static function success($data = false, string $msg = '成功', int $status = 1, int $code = 200): string;
 

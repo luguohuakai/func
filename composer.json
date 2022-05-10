@@ -21,7 +21,7 @@
     "issues": "https://github.com/luguohuakai/func/issues",
     "source": "https://github.com/luguohuakai/func"
   },
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "require": {
     "php": ">=7.0",
     "ext-curl": "*",

@@ -30,6 +30,9 @@
     "ext-mbstring": "*",
     "ext-redis": "*"
   },
+  "autoload": {
+    "psr-4": {"func\\": ""}
+  },
   "config": {
     "process-timeout": 1800
   }

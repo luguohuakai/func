@@ -15,16 +15,16 @@ class Rsa implements \func\base\Rsa
         $this->publicKey = openssl_pkey_get_public("file://$publicKeyFile");
     }
 
-    public function Sign($str)
+    public function Sign($str, $algo = OPENSSL_ALGO_SHA1)
     {
         if (!is_string($str)) return null;
-        return openssl_sign($str, $sign, $this->privateKey) ? base64_encode($sign) : null;
+        return openssl_sign($str, $sign, $this->privateKey, $algo) ? base64_encode($sign) : null;
     }
 
-    public function verify($str, $sign)
+    public function verify($str, $sign, $algo = OPENSSL_ALGO_SHA1)
     {
         if (!is_string($str)) return null;
-        $rs = openssl_verify($str, $sign, $this->publicKey);
+        $rs = openssl_verify($str, base64_decode($sign), $this->publicKey, $algo);
         if ($rs == 1) return true;
         return false;
     }
@@ -51,5 +51,11 @@ class Rsa implements \func\base\Rsa
     {
         if (!is_string($str)) return null;
         return openssl_public_decrypt(base64_decode($str), $data, $this->publicKey) ? base64_encode($data) : null;
+    }
+
+    public function __destruct()
+    {
+        if (!empty($this->privateKey)) openssl_free_key($this->privateKey);
+        if (!empty($this->publicKey)) openssl_free_key($this->publicKey);
     }
 }

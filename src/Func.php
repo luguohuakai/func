@@ -786,10 +786,10 @@ class Func implements \func\base\Func
      * @param int $times 最大请求次数
      * @return bool|string
      */
-    public static function rateLimit(int $seconds = 10, int $times = 1)
+    public static function rateLimit(int $seconds = 10, int $times = 1, int $index = 0, int $port = 6379, string $host = 'localhost', string $pass = null)
     {
         $key = 'rate_limit:' . md5($_SERVER['REMOTE_ADDR'] . $_SERVER['REQUEST_URI'] . json_encode($_GET) . json_encode($_POST));
-        $rds = self::Rds();
+        $rds = self::Rds($index, $port, $host, $pass);
         $v = $rds->get($key);
         if ($v) {
             $arr = explode(',', $v);

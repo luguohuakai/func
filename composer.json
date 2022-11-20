@@ -28,7 +28,8 @@
     "ext-json": "*",
     "ext-iconv": "*",
     "ext-mbstring": "*",
-    "ext-redis": "*"
+    "ext-redis": "*",
+    "ext-openssl": "*"
   },
   "autoload": {
     "psr-4": {"func\\": ""}

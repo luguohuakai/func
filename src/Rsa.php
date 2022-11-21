@@ -23,7 +23,8 @@ class Rsa implements \func\base\Rsa
 
     public function signPss($str)
     {
-        return \phpseclib3\Crypt\RSA::loadPrivateKey($this->privateKey)->sign($str);
+        openssl_pkey_export($this->privateKey, $output);
+        return \phpseclib3\Crypt\RSA::loadPrivateKey($output)->sign($str);
     }
 
     public function verify($str, $sign, $algo = OPENSSL_ALGO_SHA1)
@@ -36,7 +37,8 @@ class Rsa implements \func\base\Rsa
 
     public function verifyPss($str, $sign)
     {
-        return \phpseclib3\Crypt\RSA::loadPublicKey($this->publicKey)->verify($str, $sign);
+        $output = openssl_pkey_get_details($this->publicKey)['key'];
+        return \phpseclib3\Crypt\RSA::loadPublicKey($output)->verify($str, $sign);
     }
 
     public function encode($str)

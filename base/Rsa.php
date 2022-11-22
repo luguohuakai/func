@@ -8,7 +8,11 @@ interface Rsa
 {
     public function sign($str);
 
+    public function signPss($str);
+
     public function verify($str, $sign);
+
+    public function verifyPss($str, $sign);
 
     public function encode($str);
 

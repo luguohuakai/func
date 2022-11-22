@@ -38,7 +38,7 @@ class Rsa implements \func\base\Rsa
     public function verifyPss($str, $sign)
     {
         $output = openssl_pkey_get_details($this->publicKey)['key'];
-        return \phpseclib3\Crypt\RSA::loadPublicKey($output)->verify($str, $sign);
+        return \phpseclib3\Crypt\RSA::loadPublicKey($output)->verify($str, base64_decode($sign));
     }
 
     public function encode($str)

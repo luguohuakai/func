@@ -6,4 +6,6 @@ protected/data/*.db
 themes/classic/views/
 vendor
 composer.lock
-src/test.php
+src/test/test.php
+src/test/private.pem
+src/test/public.pem

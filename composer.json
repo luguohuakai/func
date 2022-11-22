@@ -30,7 +30,7 @@
     "ext-mbstring": "*",
     "ext-redis": "*",
     "ext-openssl": "*",
-    "phpseclib/phpseclib": "3.0.17"
+    "phpseclib/phpseclib": "^3.0"
   },
   "autoload": {
     "psr-4": {"func\\": ""}

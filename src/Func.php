@@ -14,7 +14,7 @@ class Func implements \func\base\Func
      * @param bool $stop 是否截断(die)
      * @param bool $as_array
      */
-    public static function dd($var, bool $stop = true, bool $as_array = false)
+    public static function dd($var, $stop = true, $as_array = false)
     {
         if (is_array($var) || is_object($var)) {
             echo '<pre>';
@@ -61,7 +61,7 @@ class Func implements \func\base\Func
      * @param int $flags 默认:FILE_APPEND 追加
      * @param string $by 默认:month 日志文件按月生成
      */
-    public static function logs(string $filename, $data, string $format = 'human-readable', int $flags = FILE_APPEND, string $by = 'month')
+    public static function logs($filename, $data, $format = 'human-readable', $flags = FILE_APPEND, $by = 'month')
     {
         if (strpos($filename, '/') === false) {
             switch (true) {
@@ -129,7 +129,7 @@ class Func implements \func\base\Func
      * @param string|null $pass
      * @return Redis
      */
-    public static function Rds(int $index = 0, int $port = 6379, string $host = 'localhost', string $pass = null): Redis
+    public static function Rds($index = 0, $port = 6379, $host = 'localhost', $pass = null)
     {
         $rds = new Redis();
         $rds->connect($host, $port);
@@ -145,7 +145,7 @@ class Func implements \func\base\Func
      * @param array $header
      * @return mixed
      */
-    public static function get($url, array $get_data = [], array $header = [])
+    public static function get($url, $get_data = [], $header = [])
     {
         if (!empty($get_data)) $url = self::joinParams($url, $get_data);
         // 初始化
@@ -175,7 +175,7 @@ class Func implements \func\base\Func
     {
         $url = $path;
         $parse_rs = parse_url($url);
-        $query = $parse_rs['query'] ?? '';
+        $query = $parse_rs['query'] ?: '';
         if (count($params) > 0) {
             $url = $query ? $url . '&' : $url . '?';
             foreach ($params as $key => $value) {
@@ -195,7 +195,7 @@ class Func implements \func\base\Func
      * @param array $header
      * @return mixed
      */
-    public static function post($url, $post_data, array $header = [])
+    public static function post($url, $post_data, $header = [])
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// SSL证书认证
@@ -227,7 +227,7 @@ class Func implements \func\base\Func
      * @param array $post_data
      * @return mixed
      */
-    public static function delete($url, array $post_data = [])
+    public static function delete($url, $post_data = [])
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // https请求 不验证证书和hosts
@@ -254,7 +254,7 @@ class Func implements \func\base\Func
      * @param array $post_data
      * @return mixed
      */
-    public static function put($url, array $post_data = [])
+    public static function put($url, $post_data = [])
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // https请求 不验证证书和hosts
@@ -283,7 +283,7 @@ class Func implements \func\base\Func
      * @param int $code
      * @return false|string
      */
-    public static function formatReturnData2Json($data = false, string $msg = '成功', int $status = 1, int $code = 200)
+    public static function formatReturnData2Json($data = false, $msg = '成功', $status = 1, $code = 200)
     {
         $re['code'] = $code;
         $re['message'] = $msg;
@@ -323,7 +323,7 @@ class Func implements \func\base\Func
      * @param int $code 大于100时为http状态码
      * @return string json
      */
-    public static function success($data = false, string $msg = '成功', int $status = 1, int $code = 200): string
+    public static function success($data = false, $msg = '成功', $status = 1, $code = 200)
     {
         return self::formatReturnData2Json($data, $msg, $status, $code);
     }
@@ -336,7 +336,7 @@ class Func implements \func\base\Func
      * @param int $code 大于100时为http状态码
      * @return string json
      */
-    public static function fail($data = false, string $msg = '失败', int $status = 0, int $code = 200): string
+    public static function fail($data = false, $msg = '失败', $status = 0, $code = 200)
     {
         return self::formatReturnData2Json($data, $msg, $status, $code);
     }
@@ -360,7 +360,7 @@ class Func implements \func\base\Func
      * @param int $size 当前没有条目数
      * @return object mixed
      */
-    public static function page(int $count, int $page, int $size)
+    public static function page($count, $page, $size)
     {
         return json_decode(json_encode([
             'page' => $page,
@@ -378,7 +378,7 @@ class Func implements \func\base\Func
      * @param string $key 密匙
      * @return array|false|string|string[]
      */
-    public static function ED(string $string = '', string $operation = 'E', string $key = 'www.srun.com')
+    public static function ED($string = '', $operation = 'E', $key = 'www.srun.com')
     {
         $key = md5($key);
         $key_length = strlen($key);
@@ -425,7 +425,7 @@ class Func implements \func\base\Func
      * ]
      * @param string $filename
      */
-    public static function exportAsCsv($data, string $filename = '')
+    public static function exportAsCsv($data, $filename = '')
     {
         if (!$filename) $filename = date('YmdHis') . '.csv';
         header("Content-type:text/csv");
@@ -463,7 +463,7 @@ class Func implements \func\base\Func
      * @param boolean $adv 是否进行高级模式获取（有可能被伪装）
      * @return mixed
      */
-    public static function getRealClientIp(int $type = 0, bool $adv = true)
+    public static function getRealClientIp($type = 0, $adv = true)
     {
         $type = $type ? 1 : 0;
         static $ip = null;
@@ -500,7 +500,7 @@ class Func implements \func\base\Func
      * @param string $suffix
      * @return string
      */
-    public static function generateUniqueId(string $prefix = 'mg_', string $uid = '', string $suffix = ''): string
+    public static function generateUniqueId($prefix = 'mg_', $uid = '', $suffix = '')
     {
         return
             uniqid($prefix . $uid . '_', true)
@@ -513,7 +513,7 @@ class Func implements \func\base\Func
      * @param $image_file
      * @return string
      */
-    public static function base64EncodeImage($image_file): string
+    public static function base64EncodeImage($image_file)
     {
         $image_info = getimagesize($image_file);
         $image_data = fread(fopen($image_file, 'r'), filesize($image_file));
@@ -526,7 +526,7 @@ class Func implements \func\base\Func
      * @param $lng
      * @return string
      */
-    public static function latLngToAddress($lat, $lng): string
+    public static function latLngToAddress($lat, $lng)
     {
         // 不要频繁调用腾讯的接口
         sleep(1);
@@ -549,7 +549,7 @@ class Func implements \func\base\Func
      * @param bool $chinese 是否汉化
      * @return string
      */
-    public static function formatDistance($size, bool $chinese = false): string
+    public static function formatDistance($size, $chinese = false)
     {
         if ($chinese) {
             $units = ['里', '公里'];
@@ -563,42 +563,42 @@ class Func implements \func\base\Func
         return round($size, 2) . $units[$i];
     }
 
-    public static function isEmail($input): bool
+    public static function isEmail($input)
     {
         return (bool)filter_var($input, FILTER_VALIDATE_EMAIL);
     }
 
-    public static function isIp($input): bool
+    public static function isIp($input)
     {
         return (bool)filter_var($input, FILTER_VALIDATE_IP);
     }
 
-    public static function isIpv4($input): bool
+    public static function isIpv4($input)
     {
         return (bool)filter_var($input, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
     }
 
-    public static function isIpv6($input): bool
+    public static function isIpv6($input)
     {
         return (bool)filter_var($input, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
     }
 
-    public static function isMac($input): bool
+    public static function isMac($input)
     {
         return (bool)filter_var($input, FILTER_VALIDATE_MAC);
     }
 
-    public static function isDomain($input): bool
+    public static function isDomain($input)
     {
         return (bool)filter_var($input, FILTER_VALIDATE_DOMAIN);
     }
 
-    public static function isUrl($input): bool
+    public static function isUrl($input)
     {
         return (bool)filter_var($input, FILTER_VALIDATE_URL);
     }
 
-    public static function isMobilePhone($input): bool
+    public static function isMobilePhone($input)
     {
         return (bool)preg_match('/^1\d{10}$/', $input);
     }
@@ -609,7 +609,7 @@ class Func implements \func\base\Func
      * @param int $dec 保留小数位数
      * @return string
      */
-    public static function dataSizeFormat(int $size = 0, int $dec = 2)
+    public static function dataSizeFormat($size = 0, $dec = 2)
     {
         if (!is_numeric($size) || $size < 0) return false;
         $unit = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB', 'NB', 'DB', 'CB', 'XB'];
@@ -619,7 +619,7 @@ class Func implements \func\base\Func
             $pos++;
         }
         $result['size'] = round($size, $dec);
-        $result['unit'] = $unit[$pos] ?? '--';
+        $result['unit'] = $unit[$pos] ?: '--';
         return $result['size'] . $result['unit'];
     }
 
@@ -639,7 +639,7 @@ class Func implements \func\base\Func
      * @return bool|int
      * @throws Exception
      */
-    public static function magicTime(string $what)
+    public static function magicTime($what)
     {
         $arr = explode('_', $what);
         if (is_numeric($arr[0])) {
@@ -718,7 +718,7 @@ class Func implements \func\base\Func
      * @param bool $mode
      * @return mixed
      */
-    public static function jsonDecodePlus($str, bool $mode = false)
+    public static function jsonDecodePlus($str, $mode = false)
     {
         if (preg_match('/\w:/', $str)) {
             $str = preg_replace('/(\w+):/is', '"$1":', $str);
@@ -730,11 +730,11 @@ class Func implements \func\base\Func
      * @param array $items 形如: [['id'=>1, 'pid'=>0, ...], ...]
      * @return array|mixed
      */
-    public static function tree(array $items)
+    public static function tree($items)
     {
         foreach ($items as $item)
             $items[$item['pid']]['son'][$item['id']] = &$items[$item['id']];
-        return $items[0]['son'] ?? [];
+        return $items[0]['son'] ?: [];
     }
 
     /**
@@ -744,7 +744,7 @@ class Func implements \func\base\Func
      * @param string $replace 要替换成的字符串 默认 *
      * @return string
      */
-    public static function replaceWith(string $str, string $position = 'middle', string $replace = '*'): string
+    public static function replaceWith($str, $position = 'middle', $replace = '*')
     {
         // 替换字符串长度均为原字符串一半 向下取整
         $str_len = mb_strlen($str);
@@ -770,7 +770,7 @@ class Func implements \func\base\Func
      * @param false $short 是否包含时分秒
      * @return false|string
      */
-    public static function dt(bool $timestamp = false, string $delimiter = '-', bool $short = false)
+    public static function dt($timestamp = false, $delimiter = '-', $short = false)
     {
         if ($timestamp === false) $timestamp = time();
         if ($short) {
@@ -786,7 +786,7 @@ class Func implements \func\base\Func
      * @param int $times 最大请求次数
      * @return bool|string
      */
-    public static function rateLimit(int $seconds = 10, int $times = 1, int $index = 0, int $port = 6379, string $host = 'localhost', string $pass = null)
+    public static function rateLimit($seconds = 10, $times = 1, $index = 0, $port = 6379, $host = 'localhost', $pass = null)
     {
         $key = 'rate_limit:' . md5($_SERVER['REMOTE_ADDR'] . $_SERVER['REQUEST_URI'] . json_encode($_GET) . json_encode($_POST));
         $rds = self::Rds($index, $port, $host, $pass);

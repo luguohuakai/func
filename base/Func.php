@@ -12,7 +12,7 @@ interface Func
 
     public static function logs(string $filename, $data, string $format = 'human-readable', int $flags = FILE_APPEND, string $by = 'month');
 
-    public static function wwLogs($filename, $data, $format = 'human-readable', $flags = FILE_APPEND, $by = 'month');
+    public static function wwLogs($filename, $data, string $format = 'human-readable', int $flags = FILE_APPEND, string $by = 'month');
 
     public static function alert($var);
 
@@ -34,9 +34,9 @@ interface Func
 
     public static function fail($data = false, string $msg = '失败', int $status = 0, int $code = 200): string;
 
-    public static function exitSuccess($data, $msg = '成功');
+    public static function exitSuccess($data, string $msg = '成功');
 
-    public static function exitFail($data = '', $msg = '失败');
+    public static function exitFail(string $data = '', string $msg = '失败');
 
     public static function page(int $count, int $page, int $size);
 

@@ -885,6 +885,7 @@ class Func implements \func\base\Func
             case 3:
                 $start = ip2long($ipArr[0]);
                 $end = ip2long($ipArr[1]);
+                if ($start > $end) return '开始IP应小于结束IP';
                 while ($start <= $end) {
                     $arr[] = long2ip($start);
                     $start++;

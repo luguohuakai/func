@@ -841,4 +841,76 @@ class Func implements \func\base\Func
             return true;
         }
     }
+
+    /**
+     * 将IP段转换为单个的IP数组
+     * 第一类: 192.168.0.0/24 (todo: 应该规定一个范围, 防止过多IP)
+     * 第二类: 192.168.0.0-10 (todo: 应该规定一个范围, 防止过多IP)
+     * 第三类: 192.168.0.0-192.168.0.10 (todo: 应该规定一个范围, 防止过多IP)
+     * 第四类: 192.168.0.0
+     * @param string $ip_part IP段
+     * @return array|string
+     */
+    public static function ipPartToArr(string $ip_part)
+    {
+        $arr = [];
+        $case = 4;
+        // 先判断是第几类IP
+        $ipArr = explode('/', $ip_part);
+        if (!self::isIpv4($ipArr[0])) return 'IP地址错误';
+        if (isset($ipArr[1])) {
+            if (!is_numeric($ipArr[1])) return '掩码必须是数字';
+            // 转化为第三类
+            $ip_part = self::subnetMaskToIpPart($ip_part);
+            goto next;
+        } else {
+            next:
+            $ipArr = explode('-', $ip_part);
+            if (isset($ipArr[1]) && is_numeric($ipArr[1])) {
+                $case = 2;
+            } elseif (isset($ipArr[1]) && self::isIpv4($ipArr[1])) {
+                $case = 3;
+            }
+        }
+
+        switch ($case) {
+            // 第二类: 192.168.0.0-10
+            case 2:
+                $start = ip2long($ipArr[0]);
+                for ($i = 0; $i < $ipArr[1]; $i++) {
+                    $arr[] = long2ip($start + $i);
+                }
+                break;
+            // 第三类: 192.168.0.0-192.168.0.10
+            case 3:
+                $start = ip2long($ipArr[0]);
+                $end = ip2long($ipArr[1]);
+                while ($start <= $end) {
+                    $arr[] = long2ip($start);
+                    $start++;
+                }
+                break;
+            // 第四类: 192.168.0.0
+            case 4:
+                $arr = [$ip_part];
+        }
+
+        return $arr;
+    }
+
+    /**
+     * IP掩码转IP段
+     * @param string $ip_str 如: 192.168.0.0/24
+     * @return string 如: 192.168.0.0-192.168.0.10
+     */
+    public static function subnetMaskToIpPart(string $ip_str): string
+    {
+        $mark_len = 32;
+        if (strpos($ip_str, "/") > 0) list($ip_str, $mark_len) = explode("/", $ip_str);
+        $ip = ip2long($ip_str);
+        $mark = 0xFFFFFFFF << (32 - $mark_len) & 0xFFFFFFFF;
+        $ip_start = $ip & $mark;
+        $ip_end = $ip | (~$mark) & 0xFFFFFFFF;
+        return long2ip($ip_start) . '-' . long2ip($ip_end);
+    }
 }

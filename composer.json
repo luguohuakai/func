@@ -32,7 +32,9 @@
     "ext-openssl": "*"
   },
   "autoload": {
-    "psr-4": {"func\\": ""}
+    "psr-4": {
+      "luguohuakai\\func\\": "src"
+    }
   },
   "config": {
     "process-timeout": 1800

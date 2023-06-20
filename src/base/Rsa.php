@@ -1,7 +1,7 @@
 <?php
 
 
-namespace func\base;
+namespace luguohuakai\func\base;
 
 
 interface Rsa

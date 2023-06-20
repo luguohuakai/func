@@ -1,12 +1,13 @@
 <?php
 
-namespace func\src;
+namespace luguohuakai\func;
 
 use DateTime;
 use Exception;
 use Redis;
+use RedisException;
 
-class Func implements \func\base\Func
+class Func implements base\Func
 {
     /**
      * 调试输出神器
@@ -60,35 +61,31 @@ class Func implements \func\base\Func
      * @param string $format 日志格式 human-readable:默认 json:JSON格式化 serialize:序列化
      * @param int $flags 默认:FILE_APPEND 追加
      * @param string $by 默认:month 日志文件按月生成
+     * @param string $level 默认:info 日志等级
      */
-    public static function logs(string $filename, $data, string $format = 'human-readable', int $flags = FILE_APPEND, string $by = 'month')
+    public static function logs(string $filename, $data, string $format = 'human-readable', int $flags = FILE_APPEND, string $by = 'month', string $level = 'info')
     {
         if (strpos($filename, '/') === false) {
-            switch (true) {
-                case is_dir('/tmp/'):
-                    $dir = '/tmp/dm-log/';
-                    if (!is_dir($dir))
-                        mkdir($dir);
-                    break;
-                case is_dir('/srun3/log/'):
-                    $dir = '/srun3/log/dm-log/';
-                    if (!is_dir($dir))
-                        mkdir($dir);
-                    break;
-                case is_dir('/srun3/www/srun_mq/backend/runtime/logs/'):
-                    $dir = '/srun3/www/srun_mq/backend/runtime/logs/dm-log/';
-                    if (!is_dir($dir))
-                        mkdir($dir);
-                    break;
-                case is_dir('/srun3/www/srun4-mgr/center/runtime/logs/'):
-                    $dir = '/srun3/www/srun4-mgr/center/runtime/logs/dm-log/';
-                    if (!is_dir($dir))
-                        mkdir($dir);
-                    break;
-                default:
-                    break;
+            $dir = './log/';
+            if (!is_dir($dir)) {
+                if (!mkdir($dir, 0777, true)) {
+                    switch (true) {
+                        case is_dir('/tmp/'):
+                            $dir = '/tmp/dm-log/';
+                            if (!is_dir($dir))
+                                mkdir($dir, 0777, true);
+                            break;
+                        case is_dir('/srun3/log/'):
+                            $dir = '/srun3/log/dm-log/';
+                            if (!is_dir($dir))
+                                mkdir($dir, 0777, true);
+                            break;
+                        default:
+                            return;
+                    }
+                }
             }
-            if (isset($dir)) $filename = $dir . $filename;
+            $filename = $dir . $filename;
         }
         $time = date('Y-m-d H:i:s', time());
         if ($by === 'month') $filename .= '_' . date('Ym', time());
@@ -99,9 +96,11 @@ class Func implements \func\base\Func
         if ($format === 'json') $data = json_encode($data, JSON_UNESCAPED_UNICODE);
         if ($format === 'serialize') $data = serialize($data);
         $filename .= '.log';
-        if (!is_file($filename)) file_put_contents($filename, '', FILE_APPEND);
-        chmod($filename, 0777);
-        file_put_contents($filename, $time . ' ' . print_r($data, true) . "\r\n", $flags);
+        if (!is_file($filename)) $rs = file_put_contents($filename, '', FILE_APPEND);
+        if (isset($rs) && $rs !== false) {
+            chmod($filename, 0777);
+            file_put_contents($filename, $time . ' ' . strtoupper($level) . ' ' . print_r($data, true) . "\r\n", $flags);
+        }
     }
 
     public static function wwLogs($filename, $data, $format = 'human-readable', $flags = FILE_APPEND, $by = 'month')
@@ -117,7 +116,7 @@ class Func implements \func\base\Func
      */
     public static function alert($var)
     {
-        $str = (string)json_encode($var);
+        $str = (string)json_encode($var, JSON_UNESCAPED_UNICODE);
         echo "<script type='text/javascript'>alert('$str');</script>";
     }
 
@@ -128,6 +127,7 @@ class Func implements \func\base\Func
      * @param string $host
      * @param string|null $pass
      * @return Redis
+     * @throws RedisException
      */
     public static function Rds(int $index = 0, int $port = 6379, string $host = 'localhost', string $pass = null): Redis
     {
@@ -721,7 +721,7 @@ class Func implements \func\base\Func
     public static function jsonDecodePlus($str, bool $mode = false)
     {
         if (preg_match('/\w:/', $str)) {
-            $str = preg_replace('/(\w+):/is', '"$1":', $str);
+            $str = preg_replace('/(\w+):/i', '"$1":', $str);
         }
         return json_decode($str, $mode);
     }
@@ -785,6 +785,7 @@ class Func implements \func\base\Func
      * @param int $seconds 秒数
      * @param int $times 最大请求次数
      * @return bool|string
+     * @throws RedisException
      */
     public static function rateLimit(int $seconds = 10, int $times = 1, int $index = 0, int $port = 6379, string $host = 'localhost', string $pass = null)
     {

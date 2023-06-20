@@ -56,6 +56,7 @@ class Func implements base\Func
     }
 
     /**
+     * 日志写入快捷方法
      * @param string $filename 日志存放位置 默认 /tmp/dm-log/
      * @param mixed $data 日志内容
      * @param string $format 日志格式 human-readable:默认 json:JSON格式化 serialize:序列化
@@ -103,7 +104,16 @@ class Func implements base\Func
         }
     }
 
-    public static function wwLogs($filename, $data, $format = 'human-readable', $flags = FILE_APPEND, $by = 'month')
+    /**
+     * 输出并写入日志
+     * @param $filename
+     * @param $data
+     * @param string $format
+     * @param int $flags
+     * @param string $by
+     * @return void
+     */
+    public static function wwLogs($filename, $data, string $format = 'human-readable', int $flags = FILE_APPEND, string $by = 'month')
     {
         self::ww($data);
         self::logs($filename, $data, $format, $flags, $by);
@@ -121,7 +131,7 @@ class Func implements base\Func
     }
 
     /**
-     * 快速连接redis
+     * 快速连接 redis
      * @param int $index
      * @param int $port
      * @param string $host
@@ -140,6 +150,7 @@ class Func implements base\Func
     }
 
     /**
+     * 快速发起http get请求
      * @param $url
      * @param array $get_data
      * @param array $header
@@ -171,6 +182,12 @@ class Func implements base\Func
         return $output;
     }
 
+    /**
+     * 凭借url参数
+     * @param $path
+     * @param $params
+     * @return false|string
+     */
     public static function joinParams($path, $params)
     {
         $url = $path;
@@ -190,6 +207,7 @@ class Func implements base\Func
     }
 
     /**
+     * 快速发起http post请求
      * @param $url
      * @param $post_data
      * @param array $header
@@ -223,6 +241,7 @@ class Func implements base\Func
     }
 
     /**
+     * 快速发起http delete请求
      * @param $url
      * @param array $post_data
      * @return mixed
@@ -250,6 +269,7 @@ class Func implements base\Func
     }
 
     /**
+     * 快速发起http put请求
      * @param $url
      * @param array $post_data
      * @return mixed
@@ -277,6 +297,7 @@ class Func implements base\Func
     }
 
     /**
+     * 格式化数据为json字符串
      * @param false|mixed $data 返回数据
      * @param string $msg
      * @param int $status
@@ -341,13 +362,25 @@ class Func implements base\Func
         return self::formatReturnData2Json($data, $msg, $status, $code);
     }
 
-    public static function exitSuccess($data, $msg = '成功')
+    /**
+     * 返回成功并结束程序
+     * @param $data
+     * @param string $msg
+     * @return void
+     */
+    public static function exitSuccess($data, string $msg = '成功')
     {
         header('Content-Type:application/json; charset=utf-8');
         exit(self::success($data, $msg));
     }
 
-    public static function exitFail($data = '', $msg = '失败')
+    /**
+     * 返回失败并结束程序
+     * @param string $data
+     * @param string $msg
+     * @return void
+     */
+    public static function exitFail(string $data = '', string $msg = '失败')
     {
         header('Content-Type:application/json; charset=utf-8');
         exit(self::fail($data, $msg));
@@ -373,6 +406,7 @@ class Func implements base\Func
     }
 
     /**
+     * 快速加解密 可带盐
      * @param string $string 需要加密解密的字符串
      * @param string $operation 判断是加密还是解密，E表示加密，D表示解密
      * @param string $key 密匙
@@ -416,6 +450,7 @@ class Func implements base\Func
     }
 
     /**
+     * 快速导出csv文件
      * @param $data
      * [
      *     ['时间' => '2020-4', '人数' => 35, '天数' => 98],
@@ -545,6 +580,7 @@ class Func implements base\Func
     }
 
     /**
+     * 快速格式化距离
      * @param $size
      * @param bool $chinese 是否汉化
      * @return string
@@ -624,8 +660,8 @@ class Func implements base\Func
     }
 
     /**
-     * // 时间函数封装
-     * // 举例
+     * 快捷处理常用时间
+     * 举例
      * magicTime('-30_days_begin') 30天前的凌晨
      * magicTime('-30_days_end') 30天前的午夜
      * magicTime('-30_months_begin') 30月前的凌晨
@@ -727,6 +763,7 @@ class Func implements base\Func
     }
 
     /**
+     * 快捷转换tree层级关系
      * @param array $items 形如: [['id'=>1, 'pid'=>0, ...], ...]
      * @return array|mixed
      */
@@ -804,5 +841,78 @@ class Func implements base\Func
             $rds->set($key, time() . ',1', $seconds);
             return true;
         }
+    }
+
+    /**
+     * 将IP段转换为单个的IP数组
+     * 第一类: 192.168.0.0/24 (todo: 应该规定一个范围, 防止过多IP)
+     * 第二类: 192.168.0.0-10 (todo: 应该规定一个范围, 防止过多IP)
+     * 第三类: 192.168.0.0-192.168.0.10 (todo: 应该规定一个范围, 防止过多IP)
+     * 第四类: 192.168.0.0
+     * @param string $ip_part IP段
+     * @return array|string
+     */
+    public static function ipPartToArr(string $ip_part)
+    {
+        $arr = [];
+        $case = 4;
+        // 先判断是第几类IP
+        $ipArr = explode('/', $ip_part);
+        if (!self::isIpv4($ipArr[0])) return 'IP地址错误';
+        if (isset($ipArr[1])) {
+            if (!is_numeric($ipArr[1])) return '掩码必须是数字';
+            // 转化为第三类
+            $ip_part = self::subnetMaskToIpPart($ip_part);
+            goto next;
+        } else {
+            next:
+            $ipArr = explode('-', $ip_part);
+            if (isset($ipArr[1]) && is_numeric($ipArr[1])) {
+                $case = 2;
+            } elseif (isset($ipArr[1]) && self::isIpv4($ipArr[1])) {
+                $case = 3;
+            }
+        }
+
+        switch ($case) {
+            // 第二类: 192.168.0.0-10
+            case 2:
+                $start = ip2long($ipArr[0]);
+                for ($i = 0; $i < $ipArr[1]; $i++) {
+                    $arr[] = long2ip($start + $i);
+                }
+                break;
+            // 第三类: 192.168.0.0-192.168.0.10
+            case 3:
+                $start = ip2long($ipArr[0]);
+                $end = ip2long($ipArr[1]);
+                if ($start > $end) return '开始IP应小于结束IP';
+                while ($start <= $end) {
+                    $arr[] = long2ip($start);
+                    $start++;
+                }
+                break;
+            // 第四类: 192.168.0.0
+            case 4:
+                $arr = [$ip_part];
+        }
+
+        return $arr;
+    }
+
+    /**
+     * IP掩码转IP段
+     * @param string $ip_str 如: 192.168.0.0/24
+     * @return string 如: 192.168.0.0-192.168.0.10
+     */
+    public static function subnetMaskToIpPart(string $ip_str): string
+    {
+        $mark_len = 32;
+        if (strpos($ip_str, "/") > 0) list($ip_str, $mark_len) = explode("/", $ip_str);
+        $ip = ip2long($ip_str);
+        $mark = 0xFFFFFFFF << (32 - $mark_len) & 0xFFFFFFFF;
+        $ip_start = $ip & $mark;
+        $ip_end = $ip | (~$mark) & 0xFFFFFFFF;
+        return long2ip($ip_start) . '-' . long2ip($ip_end);
     }
 }

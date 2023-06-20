@@ -15,10 +15,16 @@ class Rsa implements base\Rsa
         $this->publicKey = openssl_pkey_get_public("file://$publicKeyFile");
     }
 
-    public function Sign($str, $algo = OPENSSL_ALGO_SHA1)
+    public function sign($str, $algo = OPENSSL_ALGO_SHA1)
     {
         if (!is_string($str)) return null;
         return openssl_sign($str, $sign, $this->privateKey, $algo) ? base64_encode($sign) : null;
+    }
+
+    public function signPss($str): string
+    {
+        openssl_pkey_export($this->privateKey, $output);
+        return base64_encode(\phpseclib3\Crypt\RSA::loadPrivateKey($output)->sign($str));
     }
 
     public function verify($str, $sign, $algo = OPENSSL_ALGO_SHA1)
@@ -27,6 +33,12 @@ class Rsa implements base\Rsa
         $rs = openssl_verify($str, base64_decode($sign), $this->publicKey, $algo);
         if ($rs == 1) return true;
         return false;
+    }
+
+    public function verifyPss($str, $sign)
+    {
+        $output = openssl_pkey_get_details($this->publicKey)['key'];
+        return \phpseclib3\Crypt\RSA::loadPublicKey($output)->verify($str, base64_decode($sign));
     }
 
     public function encode($str)

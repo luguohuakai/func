@@ -57,7 +57,7 @@ class Func implements base\Func
 
     /**
      * 日志写入快捷方法
-     * @param string $filename 日志存放位置 默认 /tmp/dm-log/
+     * @param string $filename 日志存放位置 默认 当前目录./log/ 或 /tmp/dm-log/ 或 /srun3/log/
      * @param mixed $data 日志内容
      * @param string $format 日志格式 human-readable:默认 json:JSON格式化 serialize:序列化
      * @param int $flags 默认:FILE_APPEND 追加

@@ -9,3 +9,4 @@ composer.lock
 src/test/test.php
 src/test/private.pem
 src/test/public.pem
+.idea

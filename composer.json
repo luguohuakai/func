@@ -33,7 +33,9 @@
     "phpseclib/phpseclib": "^3.0"
   },
   "autoload": {
-    "psr-4": {"func\\": ""}
+    "psr-4": {
+      "luguohuakai\\func\\": "src"
+    }
   },
   "config": {
     "process-timeout": 1800

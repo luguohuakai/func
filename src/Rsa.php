@@ -1,10 +1,10 @@
 <?php
 
 
-namespace func\src;
+namespace luguohuakai\func;
 
 
-class Rsa implements \func\base\Rsa
+class Rsa implements base\Rsa
 {
     private $privateKey;
     private $publicKey;

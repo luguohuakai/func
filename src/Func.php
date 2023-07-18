@@ -5,7 +5,6 @@ namespace luguohuakai\func;
 use DateTime;
 use Exception;
 use Redis;
-use RedisException;
 
 class Func implements base\Func
 {
@@ -137,7 +136,6 @@ class Func implements base\Func
      * @param string $host
      * @param string|null $pass
      * @return Redis
-     * @throws RedisException
      */
     public static function Rds(int $index = 0, int $port = 6379, string $host = 'localhost', string $pass = null): Redis
     {
@@ -826,7 +824,6 @@ class Func implements base\Func
      * @param int $seconds 秒数
      * @param int $times 最大请求次数
      * @return bool|string
-     * @throws RedisException
      */
     public static function rateLimit(int $seconds = 10, int $times = 1, int $index = 0, int $port = 6379, string $host = 'localhost', string $pass = null)
     {

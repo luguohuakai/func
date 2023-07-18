@@ -34,9 +34,9 @@ interface Func
 
     public static function fail($data = false, string $msg = '失败', int $status = 0, int $code = 200): string;
 
-    public static function exitSuccess($data, string $msg = '成功');
+    public static function exitSuccess($data = false, string $msg = '成功', int $status = 1, int $code = 200);
 
-    public static function exitFail(string $data = '', string $msg = '失败');
+    public static function exitFail($data = false, string $msg = '失败', int $status = 0, int $code = 200);
 
     public static function page(int $count, int $page, int $size);
 

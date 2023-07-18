@@ -364,26 +364,30 @@ class Func implements \func\base\Func
 
     /**
      * 返回成功并结束程序
-     * @param $data
+     * @param bool $data
      * @param string $msg
+     * @param int $status
+     * @param int $code
      * @return void
      */
-    public static function exitSuccess($data, string $msg = '成功')
+    public static function exitSuccess($data = false, string $msg = '成功', int $status = 1, int $code = 200)
     {
         header('Content-Type:application/json; charset=utf-8');
-        exit(self::success($data, $msg));
+        exit(self::success($data, $msg, $status, $code));
     }
 
     /**
      * 返回失败并结束程序
-     * @param string $data
+     * @param bool $data
      * @param string $msg
+     * @param int $status
+     * @param int $code
      * @return void
      */
-    public static function exitFail(string $data = '', string $msg = '失败')
+    public static function exitFail($data = false, string $msg = '失败', int $status = 0, int $code = 200)
     {
         header('Content-Type:application/json; charset=utf-8');
-        exit(self::fail($data, $msg));
+        exit(self::fail($data, $msg, $status, $code));
     }
 
     /**

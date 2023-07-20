@@ -916,4 +916,29 @@ class Func implements base\Func
         $ip_end = $ip | (~$mark) & 0xFFFFFFFF;
         return long2ip($ip_start) . '-' . long2ip($ip_end);
     }
+
+    /**
+     * 检查字符串是否以指定字符串开头
+     * @param string $haystack
+     * @param string $needle prefix
+     * @return bool
+     */
+    public static function hasPrefix(string $haystack, string $needle): bool
+    {
+        $len = mb_strlen($needle);
+        return mb_substr($haystack, 0, $len) === $needle;
+    }
+
+    /**
+     * 检查字符串是否以指定字符串结尾
+     * @param string $haystack
+     * @param string $needle suffix
+     * @return bool
+     */
+    public static function hasSuffix(string $haystack, string $needle): bool
+    {
+        $len = mb_strlen($needle);
+        return mb_substr($haystack, -1, $len) === $needle;
+    }
+
 }

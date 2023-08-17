@@ -941,4 +941,80 @@ class Func implements base\Func
         return mb_substr($haystack, -1, $len) === $needle;
     }
 
+    /**
+     * 命令行打印 一般消息 无颜色
+     * @param string $msg
+     * @param bool $wrap 是否换行
+     * @return void
+     */
+    public static function logInfo(string $msg = '', bool $wrap = true)
+    {
+        if ($wrap) $msg .= PHP_EOL;
+        echo $msg;
+    }
+
+    /**
+     * 命令行打印 主消息 蓝色
+     * @param string $msg
+     * @param bool $wrap 是否换行
+     * @return void
+     */
+    public static function logPrimary(string $msg = '', bool $wrap = true)
+    {
+        $msg = "\033[34m $msg \033[0m";
+        if ($wrap) $msg .= PHP_EOL;
+        echo $msg;
+    }
+
+    /**
+     * 命令行打印 错误消息 背景红色
+     * @param string $msg
+     * @param bool $wrap 是否换行
+     * @return void
+     */
+    public static function logError(string $msg = '', bool $wrap = true)
+    {
+        $msg = "\033[41m $msg \033[0m";
+        if ($wrap) $msg .= PHP_EOL;
+        echo $msg;
+    }
+
+    /**
+     * 命令行打印 危险消息 红色
+     * @param string $msg
+     * @param bool $wrap 是否换行
+     * @return void
+     */
+    public static function logDanger(string $msg = '', bool $wrap = true)
+    {
+        $msg = "\033[31m $msg \033[0m";
+        if ($wrap) $msg .= PHP_EOL;
+        echo $msg;
+    }
+
+    /**
+     * 命令行打印 成功消息 绿色
+     * @param string $msg
+     * @param bool $wrap 是否换行
+     * @return void
+     */
+    public static function logSuccess(string $msg = '', bool $wrap = true)
+    {
+        $msg = "\033[32m $msg \033[0m";
+        if ($wrap) $msg .= PHP_EOL;
+        echo $msg;
+    }
+
+    /**
+     * 命令行打印 警告消息 黄色
+     * @param string $msg
+     * @param bool $wrap 是否换行
+     * @return void
+     */
+    public static function logWarn(string $msg = '', bool $wrap = true)
+    {
+        $msg = "\033[33m $msg \033[0m";
+        if ($wrap) $msg .= PHP_EOL;
+        echo $msg;
+    }
 }

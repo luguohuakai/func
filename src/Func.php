@@ -945,11 +945,13 @@ class Func implements base\Func
      * 命令行打印 一般消息 无颜色
      * @param string $msg
      * @param bool $wrap 是否换行
+     * @param bool $tips 是否前置提示
      * @return void
      */
-    public static function logInfo(string $msg = '', bool $wrap = true)
+    public static function logInfo(string $msg = '', bool $wrap = true, bool $tips = false)
     {
         if ($wrap) $msg .= PHP_EOL;
+        if ($tips) $msg = ' [INFO] ' . $msg;
         echo $msg;
     }
 
@@ -957,10 +959,12 @@ class Func implements base\Func
      * 命令行打印 主消息 蓝色
      * @param string $msg
      * @param bool $wrap 是否换行
+     * @param bool $tips 是否前置提示
      * @return void
      */
-    public static function logPrimary(string $msg = '', bool $wrap = true)
+    public static function logPrimary(string $msg = '', bool $wrap = true, bool $tips = false)
     {
+        if ($tips) $msg = "[PRIMARY] $msg";
         $msg = "\033[34m $msg \033[0m";
         if ($wrap) $msg .= PHP_EOL;
         echo $msg;
@@ -970,10 +974,12 @@ class Func implements base\Func
      * 命令行打印 错误消息 背景红色
      * @param string $msg
      * @param bool $wrap 是否换行
+     * @param bool $tips 是否前置提示
      * @return void
      */
-    public static function logError(string $msg = '', bool $wrap = true)
+    public static function logError(string $msg = '', bool $wrap = true, bool $tips = true)
     {
+        if ($tips) $msg = "[ERROR] $msg";
         $msg = "\033[41m $msg \033[0m";
         if ($wrap) $msg .= PHP_EOL;
         echo $msg;
@@ -983,10 +989,12 @@ class Func implements base\Func
      * 命令行打印 危险消息 红色
      * @param string $msg
      * @param bool $wrap 是否换行
+     * @param bool $tips 是否前置提示
      * @return void
      */
-    public static function logDanger(string $msg = '', bool $wrap = true)
+    public static function logDanger(string $msg = '', bool $wrap = true, bool $tips = true)
     {
+        if ($tips) $msg = "[DANGER] $msg";
         $msg = "\033[31m $msg \033[0m";
         if ($wrap) $msg .= PHP_EOL;
         echo $msg;
@@ -996,10 +1004,12 @@ class Func implements base\Func
      * 命令行打印 成功消息 绿色
      * @param string $msg
      * @param bool $wrap 是否换行
+     * @param bool $tips 是否前置提示
      * @return void
      */
-    public static function logSuccess(string $msg = '', bool $wrap = true)
+    public static function logSuccess(string $msg = '', bool $wrap = true, bool $tips = true)
     {
+        if ($tips) $msg = "[SUCCESS] $msg";
         $msg = "\033[32m $msg \033[0m";
         if ($wrap) $msg .= PHP_EOL;
         echo $msg;
@@ -1009,10 +1019,12 @@ class Func implements base\Func
      * 命令行打印 警告消息 黄色
      * @param string $msg
      * @param bool $wrap 是否换行
+     * @param bool $tips 是否前置提示
      * @return void
      */
-    public static function logWarn(string $msg = '', bool $wrap = true)
+    public static function logWarn(string $msg = '', bool $wrap = true, bool $tips = true)
     {
+        if ($tips) $msg = "[WARN] $msg";
         $msg = "\033[33m $msg \033[0m";
         if ($wrap) $msg .= PHP_EOL;
         echo $msg;

@@ -1029,4 +1029,41 @@ class Func implements base\Func
         if ($wrap) $msg .= PHP_EOL;
         echo $msg;
     }
+
+    /**
+     * 网络数据格式化
+     * @param numeric $size Bbps
+     * @return string
+     */
+    public static function netSizeFormat($size): string
+    {
+        if ($size < 1024) {
+            $unit = 'Bbps';
+        } else if ($size < 10240) {
+            $size = round($size / 1024, 2);
+            $unit = 'Kbps';
+        } else if ($size < 102400) {
+            $size = round($size / 1024, 2);
+            $unit = 'Kbps';
+        } else if ($size < 1048576) {
+            $size = round($size / 1024, 2);
+            $unit = 'Kbps';
+        } else if ($size < 10485760) {
+            $size = round($size / 1048576, 2);
+            $unit = 'Mbps';
+        } else if ($size < 104857600) {
+            $size = round($size / 1048576, 2);
+            $unit = 'Mbps';
+        } else if ($size < 1073741824) {
+            $size = round($size / 1048576, 2);
+            $unit = 'Mbps';
+        } else {
+            $size = round($size / 1073741824, 2);
+            $unit = 'Gbps';
+        }
+
+        $size .= $unit;
+
+        return $size;
+    }
 }

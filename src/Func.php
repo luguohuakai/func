@@ -803,6 +803,25 @@ class Func implements base\Func
     }
 
     /**
+     * 用户敏感字段隐藏显示
+     * @param string $str 要替换的字符串
+     * @param int $left 字符串左边显示个数
+     * @param int $right 字符串右边显示个数
+     * @param string $replace 要替换成的字符串 默认 *
+     * @return string
+     */
+    public static function replaceMiddle(string $str, int $left = 1, int $right = 1, string $replace = '*'): string
+    {
+        if (strlen($str) <= $left + $right) return $str;
+
+        $left_str = substr($str, 0, $left);
+        $right_str = substr($str, strlen($str) - $right);
+        $r = str_repeat($replace, strlen($str) - $left - $right);
+
+        return $left_str . $r . $right_str;
+    }
+
+    /**
      * 快速格式化时间戳
      * @param false $timestamp
      * @param string $delimiter

@@ -151,7 +151,7 @@ class Func implements base\Func
      * 快速发起http get请求
      * @param $url
      * @param array $get_data
-     * @param array $header
+     * @param array $header e.g. ['Content-Type: application/json; charset=utf-8', 'Content-Length: 48']
      * @return mixed
      */
     public static function get($url, array $get_data = [], array $header = [])
@@ -159,17 +159,15 @@ class Func implements base\Func
         if (!empty($get_data)) $url = self::joinParams($url, $get_data);
         // 初始化
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// SSL证书认证
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);// SSL证书认证
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // SSL证书认证
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // SSL证书认证
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 4);
         // 设置选项，包括URL
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HEADER, 0);
-        if (!empty($header)) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        }
+        if (!empty($header)) curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         // 执行并获取HTML文档内容
         $output = curl_exec($ch);
         $_err = curl_error($ch);
@@ -208,27 +206,32 @@ class Func implements base\Func
      * 快速发起http post请求
      * @param $url
      * @param $post_data
-     * @param array $header
+     * @param array $header e.g. ['Content-Type: application/json; charset=utf-8', 'Content-Length: 48']
+     * @param int $type 0:默认数组 1:模拟表单提交 2:模拟json提交
      * @return mixed
      */
-    public static function post($url, $post_data, array $header = [])
+    public static function post($url, $post_data, array $header = [], int $type = 0)
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// SSL证书认证
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);// SSL证书认证
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // SSL证书认证
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // SSL证书认证
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 4);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_HEADER, 0);
-        // 模拟表单提交
-//        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
-        // json方式提交
-//        $_header = array("Content-Type: application/json; charset=utf-8", "Content-Length:" . strlen(json_encode($post_data)));
-//        curl_setopt($ch, CURLOPT_HTTPHEADER, $_header);
-//        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        if ($type === 1) {
+            // 模拟表单提交
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
+        } elseif ($type === 2) {
+            // json方式提交
+            $json_data = json_encode($post_data);
+            $header = array_merge($header, ['Content-Type: application/json; charset=utf-8', 'Content-Length: ' . mb_strlen($json_data)]);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+        } else {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        }
         if (!empty($header)) curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         $output = curl_exec($ch);
         $_err = curl_error($ch);

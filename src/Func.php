@@ -151,35 +151,21 @@ class Func implements base\Func
      * 快速发起http get请求
      * @param $url
      * @param array $get_data
-     * @param array $header e.g. ['Content-Type: application/json; charset=utf-8', 'Content-Length: 48']
+     * @param array $header e.g. <br>
+     * [ <br>
+     *      'Content-Type: application/json; charset=utf-8',  <br>
+     *      'Content-Length: 48', <br>
+     * ] <br>
      * @return mixed
      */
     public static function get($url, array $get_data = [], array $header = [])
     {
         if (!empty($get_data)) $url = self::joinParams($url, $get_data);
-        // 初始化
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // SSL证书认证
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // SSL证书认证
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 4);
-        // 设置选项，包括URL
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        if (!empty($header)) curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        // 执行并获取HTML文档内容
-        $output = curl_exec($ch);
-        $_err = curl_error($ch);
-        if ($_err) return json_decode(json_encode(['_err' => $_err]));
-        // 释放curl句柄
-        curl_close($ch);
-
-        return $output;
+        return self::request('GET', $url, [], $header);
     }
 
     /**
-     * 凭借url参数
+     * 拼接url参数
      * @param $path
      * @param $params
      * @return false|string
@@ -206,94 +192,87 @@ class Func implements base\Func
      * 快速发起http post请求
      * @param $url
      * @param $post_data
-     * @param array $header e.g. ['Content-Type: application/json; charset=utf-8', 'Content-Length: 48']
+     * @param array $header e.g. <br>
+     * [ <br>
+     *      'Content-Type: application/json; charset=utf-8',  <br>
+     *      'Content-Length: 48', <br>
+     * ] <br>
      * @param int $type 0:默认数组 1:模拟表单提交 2:模拟json提交
      * @return mixed
      */
     public static function post($url, $post_data, array $header = [], int $type = 0)
     {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // SSL证书认证
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // SSL证书认证
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 4);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        if ($type === 1) {
-            // 模拟表单提交
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
-        } elseif ($type === 2) {
-            // json方式提交
-            $json_data = json_encode($post_data);
-            $header = array_merge($header, ['Content-Type: application/json; charset=utf-8', 'Content-Length: ' . mb_strlen($json_data)]);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
-        } else {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-        }
-        if (!empty($header)) curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        $output = curl_exec($ch);
-        $_err = curl_error($ch);
-        if ($_err) return json_decode(json_encode(['_err' => $_err]));
-        curl_close($ch);
-
-        return $output;
+        return self::request('POST', $url, $post_data, $header, $type);
     }
 
     /**
      * 快速发起http delete请求
      * @param $url
-     * @param array $post_data
+     * @param array $data
+     * @param array $header e.g. <br>
+     * [ <br>
+     *      'Content-Type: application/json; charset=utf-8',  <br>
+     *      'Content-Length: 48', <br>
+     * ] <br>
+     * @param int $type 0:默认数组 1:模拟表单提交 2:模拟json提交
      * @return mixed
      */
-    public static function delete($url, array $post_data = [])
+    public static function delete($url, array $data = [], array $header = [], int $type = 0)
     {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // https请求 不验证证书和hosts
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data)); // 模拟表单提交
-        // json方式提交
-        $header = array("Content-Type: application/json; charset=utf-8", "Content-Length:" . strlen(json_encode($post_data)));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
-        if (!empty($header)) curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        $output = curl_exec($ch);
-        $_err = curl_error($ch);
-        if ($_err) return json_decode(json_encode(['_err' => $_err]));
-        curl_close($ch);
-        return $output;
+        return self::request('DELETE', $url, $data, $header, $type);
     }
 
     /**
      * 快速发起http put请求
      * @param $url
-     * @param array $post_data
+     * @param array $data
+     * @param array $header e.g. <br>
+     * [ <br>
+     *      'Content-Type: application/json; charset=utf-8',  <br>
+     *      'Content-Length: 48', <br>
+     * ] <br>
+     * @param int $type 0:默认数组 1:模拟表单提交 2:模拟json提交
      * @return mixed
      */
-    public static function put($url, array $post_data = [])
+    public static function put($url, array $data = [], array $header = [], int $type = 0)
+    {
+        return self::request('PUT', $url, $data, $header, $type);
+    }
+
+    private static function request($method, $url, $data = [], $header = [], $type = 0)
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // https请求 不验证证书和hosts
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // https请求 不验证证书
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE); // https请求 不验证hosts
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data)); // 模拟表单提交
-        // json方式提交
-        $header = array("Content-Type: application/json; charset=utf-8", "Content-Length:" . strlen(json_encode($post_data)));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        if ($method === 'POST') curl_setopt($ch, CURLOPT_POST, 1);
+
+        if ($type === 1) {
+            // 模拟表单提交
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        } elseif ($type === 2) {
+            // json方式提交
+            $json_data = json_encode($data);
+            $header = array_merge($header, ['Content-Type: application/json; charset=utf-8', 'Content-Length: ' . mb_strlen($json_data)]);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+        } else {
+            if (!empty($data)) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        }
+
         if (!empty($header)) curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
         $output = curl_exec($ch);
         $_err = curl_error($ch);
         if ($_err) return json_decode(json_encode(['_err' => $_err]));
+
         curl_close($ch);
+
         return $output;
     }
 

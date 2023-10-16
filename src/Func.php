@@ -96,11 +96,12 @@ class Func implements base\Func
         if ($format === 'json') $data = json_encode($data, JSON_UNESCAPED_UNICODE);
         if ($format === 'serialize') $data = serialize($data);
         $filename .= '.log';
-        if (!is_file($filename)) $rs = file_put_contents($filename, '', FILE_APPEND);
-        if (isset($rs) && $rs !== false) {
-            chmod($filename, 0777);
-            file_put_contents($filename, $time . ' ' . strtoupper($level) . ' ' . print_r($data, true) . "\r\n", $flags);
+        if (!is_file($filename)) {
+            $rs = file_put_contents($filename, '', FILE_APPEND);
+            if ($rs !== false) chmod($filename, 0777);
         }
+
+        file_put_contents($filename, $time . ' ' . strtoupper($level) . ' ' . print_r($data, true) . "\r\n", $flags);
     }
 
     /**

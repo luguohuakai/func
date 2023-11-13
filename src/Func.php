@@ -260,7 +260,7 @@ class Func implements base\Func
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
         } elseif ($type === 2) {
             // json方式提交
-            $json_data = json_encode($data);
+            $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
             $header = array_merge($header, ['Content-Type: application/json; charset=utf-8', 'Content-Length: ' . mb_strlen($json_data)]);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
         } else {

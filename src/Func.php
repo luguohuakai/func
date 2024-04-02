@@ -198,7 +198,7 @@ class Func implements base\Func
      *      'Content-Type: application/json; charset=utf-8',  <br>
      *      'Content-Length: 48', <br>
      * ] <br>
-     * @param int $type 0:默认数组 1:模拟表单提交 2:模拟json提交
+     * @param int $type 0:默认数组 1:模拟表单提交 2:模拟json提交 3:json-rpc方式提交
      * @return mixed
      */
     public static function post($url, $post_data, array $header = [], int $type = 0)
@@ -215,7 +215,7 @@ class Func implements base\Func
      *      'Content-Type: application/json; charset=utf-8',  <br>
      *      'Content-Length: 48', <br>
      * ] <br>
-     * @param int $type 0:默认数组 1:模拟表单提交 2:模拟json提交
+     * @param int $type 0:默认数组 1:模拟表单提交 2:模拟json提交 3:json-rpc方式提交
      * @return mixed
      */
     public static function delete($url, array $data = [], array $header = [], int $type = 0)
@@ -232,7 +232,7 @@ class Func implements base\Func
      *      'Content-Type: application/json; charset=utf-8',  <br>
      *      'Content-Length: 48', <br>
      * ] <br>
-     * @param int $type 0:默认数组 1:模拟表单提交 2:模拟json提交
+     * @param int $type 0:默认数组 1:模拟表单提交 2:模拟json提交 3:json-rpc方式提交
      * @return mixed
      */
     public static function put($url, array $data = [], array $header = [], int $type = 0)
@@ -260,8 +260,12 @@ class Func implements base\Func
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
         } elseif ($type === 2) {
             // json方式提交
-            $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
             $header = array_merge($header, ['Content-Type: application/json; charset=utf-8']);
+            $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+        } elseif ($type === 3) {
+            $header = array_merge($header, ['Content-Type: application/json-rpc']);
+            $json_data = json_encode($data, JSON_UNESCAPED_UNICODE);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
         } else {
             if (!empty($data)) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);

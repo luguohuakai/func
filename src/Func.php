@@ -305,16 +305,13 @@ class Func implements base\Func
         $headers = [
             'Access-Control-Allow-Origin' => '*',
             'Access-Control-Allow-Methods' => 'POST,PUT,GET,DELETE,OPTIONS',
-            'Access-Control-Allow-Headers' => 'ApiAuth, token, User-Agent, Keep-Alive, Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With',
+            'Access-Control-Allow-Headers' => 'ApiAuth, token, Token, Authorization, User-Agent, Keep-Alive, Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With',
             'Access-Control-Allow-Credentials' => 'true'
         ];
         $headers['Content-Type'] = 'application/json; charset=utf-8';
-        $headers_str = '';
         foreach ($headers as $k => $header) {
-            $headers_str .= $k . ': ' . $header . '; ';
+            header("$k: $header");
         }
-        $headers_str = substr($headers_str, 0, -2);
-        header($headers_str);
         return json_encode($re, JSON_UNESCAPED_UNICODE);
     }
 

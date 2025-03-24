@@ -284,7 +284,10 @@ class Func implements base\Func
 
     /**
      * 格式化数据为json字符串
-     * @param false|mixed $data 返回数据
+     * @param false|mixed $data 返回数据<br>
+     * 注意: 当$data中包含data或extra键时, 只会返回data或extra键的值, 其它键会被丢弃<br>
+     * 如: $data = ['data'=>'x','extra'=>'x'],返回: {"code":x,"message":"x","status":x,"data":"x","extra":"x"}<br>
+     * 如: $data = ['data'=>'x','a'=>'x'],返回: {"code":x,"message":"x","status":x,"data":"x"},其它参数会被被丢弃<br>
      * @param string $msg
      * @param int $status
      * @param int $code
@@ -309,7 +312,7 @@ class Func implements base\Func
         $headers = [
             'Access-Control-Allow-Origin' => '*',
             'Access-Control-Allow-Methods' => 'POST,PUT,GET,DELETE,OPTIONS',
-            'Access-Control-Allow-Headers' => 'ApiAuth, token, User-Agent, Keep-Alive, Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With',
+            'Access-Control-Allow-Headers' => 'ApiAuth, token, Token, Authorization, User-Agent, Keep-Alive, Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With',
             'Access-Control-Allow-Credentials' => 'true'
         ];
         $headers['Content-Type'] = 'application/json; charset=utf-8';
@@ -321,7 +324,10 @@ class Func implements base\Func
 
     /**
      * json返回 成功
-     * @param bool|mixed $data false代表不返回data字段
+     * @param bool|mixed $data false代表不返回data字段<br>
+     * 注意: 当$data中包含data或extra键时, 只会返回data或extra键的值, 其它键会被丢弃<br>
+     * 如: $data = ['data'=>'x','extra'=>'x'],返回: {"code":x,"message":"x","status":x,"data":"x","extra":"x"}<br>
+     * 如: $data = ['data'=>'x','a'=>'x'],返回: {"code":x,"message":"x","status":x,"data":"x"},其它参数会被被丢弃<br>
      * @param string $msg
      * @param int $status 1:成功 0:失败
      * @param int $code 大于100时为http状态码
@@ -334,7 +340,10 @@ class Func implements base\Func
 
     /**
      * json返回 失败
-     * @param bool|mixed $data false代表不返回data字段
+     * @param bool|mixed $data false代表不返回data字段<br>
+     * 注意: 当$data中包含data或extra键时, 只会返回data或extra键的值, 其它键会被丢弃<br>
+     * 如: $data = ['data'=>'x','extra'=>'x'],返回: {"code":x,"message":"x","status":x,"data":"x","extra":"x"}<br>
+     * 如: $data = ['data'=>'x','a'=>'x'],返回: {"code":x,"message":"x","status":x,"data":"x"},其它参数会被被丢弃<br>
      * @param string $msg
      * @param int $status
      * @param int $code 大于100时为http状态码

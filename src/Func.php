@@ -313,12 +313,9 @@ class Func implements base\Func
             'Access-Control-Allow-Credentials' => 'true'
         ];
         $headers['Content-Type'] = 'application/json; charset=utf-8';
-        $headers_str = '';
         foreach ($headers as $k => $header) {
-            $headers_str .= $k . ': ' . $header . '; ';
+            header("$k: $header");
         }
-        $headers_str = substr($headers_str, 0, -2);
-        header($headers_str);
         return json_encode($re, JSON_UNESCAPED_UNICODE);
     }
 

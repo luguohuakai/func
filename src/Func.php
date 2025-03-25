@@ -4,6 +4,7 @@ namespace luguohuakai\func;
 
 use DateTime;
 use Exception;
+use InvalidArgumentException;
 use Redis;
 
 class Func implements base\Func
@@ -1078,5 +1079,94 @@ class Func implements base\Func
         $size .= $unit;
 
         return $size;
+    }
+
+
+    /**
+     * 将秒数格式化为人类可读的时间字符串。
+     *
+     * 该函数将给定的秒数转换为包含年、月、日、时、分、秒的字符串表示形式。
+     * 支持两种语言：英语（en）和中文（zh）。默认语言为英语。
+     *
+     * @param int $seconds 要格式化的秒数。
+     * @param string $language 输出的语言，支持 'en'（英语）和 'zh'（中文）。默认为 'en'。
+     *
+     * @return string 格式化后的时间字符串，最多包含三个时间单位。
+     *
+     * @throws InvalidArgumentException 当传入不支持的语言时抛出异常。
+     */
+    public function formatSeconds(int $seconds, string $language = 'en'): string
+    {
+        $units = [
+            'years' => 365 * 24 * 3600,
+            'months' => 30 * 24 * 3600,
+            'days' => 24 * 3600,
+            'hours' => 3600,
+            'minutes' => 60,
+            'seconds' => 1
+        ];
+
+        $timeUnits = [];
+        foreach ($units as $unit => $value) {
+            $count = floor($seconds / $value);
+            if ($count > 0) {
+                $timeUnits[$unit] = $count;
+                $seconds -= $count * $value;
+            }
+        }
+
+        $formattedUnits = [];
+        foreach ($timeUnits as $unit => $value) {
+            if ($language === 'zh') {
+                switch ($unit) {
+                    case 'years':
+                        $formattedUnits[] = $value . '年';
+                        break;
+                    case 'months':
+                        $formattedUnits[] = $value . '月';
+                        break;
+                    case 'days':
+                        $formattedUnits[] = $value . '天';
+                        break;
+                    case 'hours':
+                        $formattedUnits[] = $value . '时';
+                        break;
+                    case 'minutes':
+                        $formattedUnits[] = $value . '分';
+                        break;
+                    case 'seconds':
+                        $formattedUnits[] = $value . '秒';
+                        break;
+                }
+            } elseif ($language === 'en') {
+                switch ($unit) {
+                    case 'years':
+                        $formattedUnits[] = $value . 'Y';
+                        break;
+                    case 'months':
+                        $formattedUnits[] = $value . 'M';
+                        break;
+                    case 'days':
+                        $formattedUnits[] = $value . 'd';
+                        break;
+                    case 'hours':
+                        $formattedUnits[] = $value . 'h';
+                        break;
+                    case 'minutes':
+                        $formattedUnits[] = $value . 'm';
+                        break;
+                    case 'seconds':
+                        $formattedUnits[] = $value . 's';
+                        break;
+                }
+            } else {
+                throw new InvalidArgumentException("Unsupported language: $language");
+            }
+        }
+
+        // 只保留前三个时间单位
+        $formattedUnits = array_slice($formattedUnits, 0, 3);
+
+        return implode(' ', $formattedUnits);
     }
 }
